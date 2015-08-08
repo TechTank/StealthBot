@@ -1931,7 +1931,7 @@ Private Sub Form_Load()
     'str = "flood"
     
     'For I = 1 To Len(str)
-    '   tmp = tmp & Hex(Asc(Mid(str, I, 1)))
+    '   tmp = tmp & Hex$(Asc(Mid$(str, I, 1)))
     'Next I
 
 '    BotVars.UseProxy = True
@@ -1969,9 +1969,9 @@ Public Sub cacheTimer_Timer()
         
         For c = 0 To UBound(strArray)
             ' [CHANNELOP]  -  [*CHANNELOP]  -  [CHARACTER@USEast (*CHANNELOP)]
-            If StrComp(UCase(strArray(c)), strArray(c), vbBinaryCompare) = 0 Then
+            If StrComp(UCase$(strArray(c)), strArray(c), vbBinaryCompare) = 0 Then
                 If Left$(strArray(c), 1) = "[" And Right$(strArray(c), 1) = "]" Then
-                    strArray(c) = Mid(strArray(c), 2, Len(strArray(c)) - 2)
+                    strArray(c) = Mid$(strArray(c), 2, Len(strArray(c)) - 2)
                 End If
             End If
             
@@ -2364,9 +2364,9 @@ Public Sub FindAltBNLS()
                 strReturn = INet.OpenURL(ReadCfg("Override", "BNLSSource"))
             End If
             
-            If ((strReturn = vbNullString) Or (Right(strReturn, 2) <> vbCrLf)) Then
+            If ((Len(strReturn) = 0) Or (Right$(strReturn, 2) <> vbCrLf)) Then
                 strReturn = INet.OpenURL("http://stealthbot.net/sb/bnls.php")
-                If ((strReturn = vbNullString) Or (Left(strReturn, 1) <> vbLf)) Then
+                If ((Len(strReturn) = 0) Or (Left$(strReturn, 1) <> vbLf)) Then
                     AddChat RTBColors.ErrorMessageText, "[BNLS] An error occured while trying to locate an alternative BNLS server."
                     AddChat RTBColors.ErrorMessageText, "[BNLS]   You may not be connected to the internet or may be having DNS resolution issues."
                     AddChat RTBColors.ErrorMessageText, "[BNLS]   Visit http://www.stealthbot.net/ and check the Technical Support forum for more information."
@@ -3018,7 +3018,7 @@ Public Function GetLogFilePath() As String
     
     Path = StringFormat("{0}{1}.txt", GetFolderPath("Logs"), Format(Date, "YYYY-MM-DD"))
 
-    If (Dir$(Path) = vbNullString) Then
+    If (Len(Dir$(Path)) = 0) Then
         Open Path For Output As #f
         Close #1
     End If
@@ -4085,7 +4085,7 @@ Private Sub mnuPopFLWhisper_Click()
         AddQ "/w " & CleanUsername(lvFriendList.SelectedItem.Text, True) & _
             Space(1) & cboSend.Text, PRIORITY.CONSOLE_MESSAGE
             
-        cboSend.Text = ""
+        cboSend.Text = vbNullString
     End If
 End Sub
 
@@ -4320,7 +4320,7 @@ Private Sub mnuPacketLog_Click()
     If mnuPacketLog.Checked Then
         ' turning this feature off
         AddChat RTBColors.SuccessText, "StealthBot packet traffic will no longer be logged."
-        PacketLogFilePath = ""
+        PacketLogFilePath = vbNullString
     Else
         ' turning it on
         AddChat RTBColors.SuccessText, "StealthBot packet traffic will be logged in the bot's folder, in a file named " & Format(Date, "yyyy-MM-dd") & "-PacketLog.txt."
@@ -5359,7 +5359,7 @@ Private Sub cboSend_KeyDown(KeyCode As Integer, Shift As Integer)
                 
             Case KEY_B
                 If (Shift = S_CTRL) Then
-                    cboSend.SelText = "ÿcb"
+                    cboSend.SelText = "Ã¿cb"
                 End If
                 
             'Case KEY_J
@@ -5369,12 +5369,12 @@ Private Sub cboSend_KeyDown(KeyCode As Integer, Shift As Integer)
                 
             Case KEY_U
                 If (Shift = S_CTRL) Then
-                    cboSend.SelText = "ÿcu"
+                    cboSend.SelText = "Ã¿cu"
                 End If
                 
             Case KEY_I
                 If (Shift = S_CTRL) Then
-                    cboSend.SelText = "ÿci"
+                    cboSend.SelText = "Ã¿ci"
                 End If
                 
             Case KEY_DELETE
@@ -5395,7 +5395,7 @@ Private Sub cboSend_KeyDown(KeyCode As Integer, Shift As Integer)
                     End If
                 Else
                     With cboSend
-                        If (User = vbNullString) Then
+                        If (Len(User) = 0) Then
                             strbuf = .Text
                             
                             If (.selStart > 0) Then
@@ -5567,9 +5567,9 @@ Private Sub cboSend_KeyDown(KeyCode As Integer, Shift As Integer)
                                 '
                                 '    GoTo theEnd
                                 '
-                                'ElseIf LCase(Left$(s, 7)) = "/watch " Then
-                                '    WatchUser = LCase(Right(s, Len(s) - 7))
-                                '    AddChat RTBColors.ConsoleText, "Watching " & Right(s, Len(s) - 7)
+                                'ElseIf LCase$(Left$(s, 7)) = "/watch " Then
+                                '    WatchUser = LCase$(Right$(s, Len(s) - 7))
+                                '    AddChat RTBColors.ConsoleText, "Watching " & Right$(s, Len(s) - 7)
                                 '
                                 '    GoTo theEnd
                                 '
@@ -5577,24 +5577,24 @@ Private Sub cboSend_KeyDown(KeyCode As Integer, Shift As Integer)
                                 '    WatchUser = vbNullString
                                 '    AddChat RTBColors.ConsoleText, "Watch off."
                                 '    GoTo theEnd
-                                'ElseIf (LCase(Left$(s, 7)) = "/reply ") Then
+                                'ElseIf (LCase$(Left$(s, 7)) = "/reply ") Then
                                 '
-                                '   m = Right(s, (Len(s) - 7))
-                                'ElseIf (LCase(Left$(s, 7)) = "/reply ") Then
-                                '    m = Right(s, (Len(s) - 7))
+                                '   m = Right$(s, (Len(s) - 7))
+                                'ElseIf (LCase$(Left$(s, 7)) = "/reply ") Then
+                                '    m = Right$(s, (Len(s) - 7))
                                 '
                                 '    AddQ "/w " & LastWhisper & Space(1) & OutFilterMsg(m), _
                                 '        PRIORITY.CONSOLE_MESSAGE
                                     
-                                'ElseIf (LCase(Left$(s, 9)) = "/profile ") Then
+                                'ElseIf (LCase$(Left$(s, 9)) = "/profile ") Then
                                 '    If (sckBNet.State = 7) Then
-                                '        RequestProfile Right(s, Len(s) - 9)
+                                '        RequestProfile Right$(s, Len(s) - 9)
                                 '    End If
                                 '
-                                '    frmProfile.lblUsername.Caption = Right(s, Len(s) - 9)
+                                '    frmProfile.lblUsername.Caption = Right$(s, Len(s) - 9)
                                 '    frmProfile.Show
                                 
-                                ElseIf (LCase(Left$(s, 1)) = "/") Then
+                                ElseIf (Left$(s, 1) = "/") Then
                                     Dim commandResult As Boolean ' ..
                                 
                                     'If ((Left$(s, 3) = "/w ") Or (Left$(s, 3) = "/m ")) Then
@@ -5686,7 +5686,7 @@ Private Sub cboSend_KeyPress(KeyAscii As Integer)
             '    (KeyAscii <> 8)) Then
             '
             '    If (Highlighted) Then
-            '        .SelText = ""
+            '        .SelText = vbNullString
             '        Highlighted = False
             '    End If
             '
@@ -5983,12 +5983,12 @@ Private Sub Timer_Timer()
 
     If IdleWait < 2 Then Exit Sub
     
-    If iCounter >= IdleWait And StrComp(LCase(g_Channel.Name), "op [vl]", vbTextCompare) <> 0 Then
+    If iCounter >= IdleWait And StrComp(LCase$(g_Channel.Name), "op [vl]", vbTextCompare) <> 0 Then
         iCounter = 0
         'on error resume next
-        If IdleType = "msg" Or IdleType = vbNullString Then
+        If IdleType = "msg" Or Len(IdleType) = 0 Then
         
-            If StrComp(IdleMsg, "null", vbTextCompare) = 0 Or IdleMsg = vbNullString Then
+            If StrComp(IdleMsg, "null", vbTextCompare) = 0 Or Len(IdleMsg) = 0 Then
                 Exit Sub
             End If
             
@@ -6005,7 +6005,7 @@ Private Sub Timer_Timer()
             IdleMsg = Replace(IdleMsg, "%rnd", GetRandomPerson)
             IdleMsg = Replace(IdleMsg, "%t", Time$)
             
-            If (IdleMsg = vbNullString) Then
+            If (Len(IdleMsg) = 0) Then
                 GoTo Error
             End If
             
@@ -6530,7 +6530,7 @@ Private Function ReplaceEnvironmentVars(ByVal str As String) As String
     
     i = 1
 
-    While (Environ$(i) <> "")
+    While (Len(Environ$(i)) <> 0)
         Name = Mid$(Environ$(i), 1, InStr(1, Environ$(i), "=") - 1)
 
         Value = Mid$(Environ$(i), InStr(1, Environ$(i), "=") + 1)
@@ -6754,7 +6754,7 @@ Function AddQ(ByVal Message As String, Optional msg_priority As Integer = -1, Op
                 Else
                     Send = Command
                 End If
-            ElseIf (Left(Send, 1) = "/" And i > LBound(Splt)) Then
+            ElseIf (Left$(Send, 1) = "/" And i > LBound(Splt)) Then
                 Send = StringFormat(" {0}", Send)
             End If
             
@@ -6862,7 +6862,7 @@ Sub ReloadConfig(Optional Mode As Byte = 0)
     BotVars.CDKey = UCase$(ReadCfg(MN, "CDKey"))
     BotVars.ExpKey = UCase$(ReadCfg(MN, "ExpKey"))
     
-    If BotVars.ExpKey = "" Then
+    If Len(BotVars.ExpKey) = 0 Then
         BotVars.ExpKey = UCase$(ReadCfg(MN, "LODKey"))
     End If
     
@@ -6873,7 +6873,7 @@ Sub ReloadConfig(Optional Mode As Byte = 0)
     
     ' filter out the { }'s that were left
     s = ReadCfg(MN, "Trigger")
-    s = Mid(s, 2, Len(s) - 2)
+    s = Mid$(s, 2, Len(s) - 2)
     
     BotVars.Trigger = s
     
@@ -7406,8 +7406,8 @@ Sub ReloadConfig(Optional Mode As Byte = 0)
     s = ReadCfg(MN, "UseRealm")
     If s = "Y" Then BotVars.UseRealm = True Else BotVars.UseRealm = False
     
-    txtPre.Text = ""
-    txtPost.Text = ""
+    txtPre.Text = vbNullString
+    txtPost.Text = vbNullString
     
     s = ReadCfg(OT, "DisablePrefix")
     If s = "Y" Then
@@ -7519,8 +7519,8 @@ Sub LoadOutFilters()
     End If
     
     For i = 1 To Val(s)
-        gOutFilters(i).ofFind = Replace(LCase(ReadINI(o, "Find" & i, f)), "¦", " ")
-        gOutFilters(i).ofReplace = Replace(ReadINI(o, "Replace" & i, f), "¦", " ")
+        gOutFilters(i).ofFind = Replace(LCase$(ReadINI(o, "Find" & i, f)), "Â¦", " ")
+        gOutFilters(i).ofReplace = Replace(ReadINI(o, "Replace" & i, f), "Â¦", " ")
         
         If (i <> Val(s)) Then
             ReDim Preserve gOutFilters(1 To i + 1)
@@ -7549,7 +7549,7 @@ Sub LoadOutFilters()
             Loop
             
             'Note: Why did this happen?
-            'If Catch(0) = vbNullString Then Catch(0) = "¯"
+            'If Catch(0) = vbNullString Then Catch(0) = "Â¯"
             
         Close #i
     End If
@@ -7745,7 +7745,7 @@ Sub LoadArray(ByVal Mode As Byte, ByRef tArray() As String)
                     If Len(temp) > 0 Then
                         ' removed for 2.5 - why am I PCing it ?
                         'If Mode = LOAD_SAFELIST Then temp = PrepareCheck(temp)
-                        tArray(UBound(tArray)) = LCase(temp)
+                        tArray(UBound(tArray)) = LCase$(temp)
                         ReDim Preserve tArray(UBound(tArray) + 1)
                     End If
                 Loop While Not EOF(f)
@@ -7756,7 +7756,7 @@ Sub LoadArray(ByVal Mode As Byte, ByRef tArray() As String)
                     For i = 1 To c
                         temp = ReadINI(FI, "Filter" & i, "filters.ini")
                         If temp <> vbNullString Then
-                            tArray(UBound(tArray)) = LCase(temp)
+                            tArray(UBound(tArray)) = LCase$(temp)
                             If i <> c Then ReDim Preserve tArray(UBound(tArray) + 1)
                         End If
                     Next i
