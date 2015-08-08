@@ -75,7 +75,7 @@ End Function
 'This is the replacement for ExecuteCommand, Uses the new clsCommandObj, Should be cleaner.
 Public Function DispatchCommand(Command As clsCommandObj)
     DispatchCommand = True
-    Select Case LCase(Command.Name)
+    Select Case LCase$(Command.Name)
         'Bot information commands
         Case "about":          Call modCommandsInfo.OnAbout(Command)
         Case "accountinfo":    Call modCommandsInfo.OnAccountInfo(Command)
@@ -262,7 +262,7 @@ Public Function DBUserToString(ByVal User As String, ByVal dbType As String) As 
     
     Dim TypeStr As String
     
-    If (Len(dbType) > 0 And StrComp(dbType, "%") <> 0 And StrComp(dbType, "user", vbTextCompare) <> 0) Then
+    If (Len(dbType) <> 0 And StrComp(dbType, "%") <> 0 And StrComp(dbType, "user", vbTextCompare) <> 0) Then
         TypeStr = StringFormat(" ({0})", LCase$(dbType))
     Else
         TypeStr = vbNullString
@@ -298,7 +298,7 @@ Public Function OnRemOld(ByVal Username As String, ByRef dbAccess As udtGetAcces
     End If
     
     ' do we have any special paramaters?
-    If (Len(params) > 0) Then
+    If (Len(params) <> 0) Then
         strArray() = Split(params, " --") ' split message by paramter
         
         ' loop through paramter list
@@ -319,7 +319,7 @@ Public Function OnRemOld(ByVal Username As String, ByRef dbAccess As udtGetAcces
             ' handle parameters
             Select Case (parameter)
                 Case "type"
-                    If (Len(pmsg) > 0) Then
+                    If (Len(pmsg) <> 0) Then
                         Select Case UCase$(pmsg)
                             Case "USER":
                             Case "GROUP":
@@ -336,7 +336,7 @@ Public Function OnRemOld(ByVal Username As String, ByRef dbAccess As udtGetAcces
     sUsername = msgData
     User = GetAccess(sUsername, dbType)
     
-    If (Len(sUsername) > 0) Then
+    If (Len(sUsername) <> 0) Then
         If ((GetAccess(sUsername, dbType).Rank = -1) And (LenB(GetAccess(sUsername, dbType).Flags) = 0)) Then
             tmpbuf = "User not found."
         ElseIf (GetAccess(sUsername, dbType).Rank >= dbAccess.Rank) Then
@@ -611,7 +611,7 @@ Public Function OnAddOld(ByVal Username As String, ByRef dbAccess As udtGetAcces
         
         ' if we've found a matching user, lets correct
         ' the casing of the name that we've entered
-        If (Len(gAcc.Username) > 0) Then
+        If (Len(gAcc.Username) <> 0) Then
             If (StrComp(gAcc.Type, dbType, vbTextCompare) = 0) Then
                 User = gAcc.Username
             End If
@@ -651,7 +651,7 @@ Public Function OnAddOld(ByVal Username As String, ByRef dbAccess As udtGetAcces
                     ' remove "+" prefix
                     Flags = Mid$(Flags, 2)
                 
-                    If (Len(Flags) > 0) Then
+                    If (Len(Flags) <> 0) Then
                         ' set user flags & check for duplicate entries
                         For i = 1 To Len(Flags)
                             currentCharacter = Mid$(Flags, i, 1)
@@ -688,7 +688,7 @@ Public Function OnAddOld(ByVal Username As String, ByRef dbAccess As udtGetAcces
                     
                     ' are we modifying an existing user? we better be!
                     If (gAcc.Username <> vbNullString) Then
-                        If (Len(tmpFlags) > 0) Then
+                        If (Len(tmpFlags) <> 0) Then
                             ' check for special flags
                             If (InStr(1, tmpFlags, "B", vbBinaryCompare) <> 0) Then
                                 If (InStr(1, User, "*", vbBinaryCompare) <> 0) Then
@@ -1133,7 +1133,7 @@ Public Function GetShitlist(ByVal Username As String) As String
     End If
     
     If (Ban) Then
-        If ((Len(gAcc.BanMessage) > 0) And (gAcc.BanMessage <> "%")) Then
+        If ((Len(gAcc.BanMessage) <> 0) And (gAcc.BanMessage <> "%")) Then
             GetShitlist = Username & Space$(1) & gAcc.BanMessage
         ElseIf InStr(1, gAcc.Username, " (clan)", vbBinaryCompare) > 0 Then
             GetShitlist = Username & Space$(1) & "Clanban: " & Mid$(gAcc.Username, 2, InStr(1, gAcc.Username, " (clan)", vbBinaryCompare) - 2)
@@ -1149,39 +1149,39 @@ End Function
 
 ' requires public
 Public Function PrepareCheck(ByVal toCheck As String) As String
-    toCheck = Replace(toCheck, "[", "ÿ")
-    toCheck = Replace(toCheck, "]", "ö")
-    toCheck = Replace(toCheck, "~", "Ü")
-    toCheck = Replace(toCheck, "#", "¢")
-    toCheck = Replace(toCheck, "-", "£")
-    toCheck = Replace(toCheck, "&", "¥")
-    toCheck = Replace(toCheck, "@", "¤")
-    toCheck = Replace(toCheck, "{", "ƒ")
-    toCheck = Replace(toCheck, "}", "á")
-    toCheck = Replace(toCheck, "^", "í")
-    toCheck = Replace(toCheck, "`", "ó")
-    toCheck = Replace(toCheck, "_", "ú")
-    toCheck = Replace(toCheck, "+", "ñ")
-    toCheck = Replace(toCheck, "$", "÷")
+    toCheck = Replace(toCheck, "[", "Ã¿")
+    toCheck = Replace(toCheck, "]", "Ã¶")
+    toCheck = Replace(toCheck, "~", "Ãœ")
+    toCheck = Replace(toCheck, "#", "Â¢")
+    toCheck = Replace(toCheck, "-", "Â£")
+    toCheck = Replace(toCheck, "&", "Â¥")
+    toCheck = Replace(toCheck, "@", "Â¤")
+    toCheck = Replace(toCheck, "{", "Âƒ")
+    toCheck = Replace(toCheck, "}", "Ã¡")
+    toCheck = Replace(toCheck, "^", "Ã­")
+    toCheck = Replace(toCheck, "`", "Ã³")
+    toCheck = Replace(toCheck, "_", "Ãº")
+    toCheck = Replace(toCheck, "+", "Ã±")
+    toCheck = Replace(toCheck, "$", "Ã·")
     PrepareCheck = LCase$(toCheck)
 End Function
 
 ' requires public
 Public Function ReversePrepareCheck(ByVal toCheck As String) As String
-    toCheck = Replace(toCheck, "ÿ", "[")
-    toCheck = Replace(toCheck, "ö", "]")
-    toCheck = Replace(toCheck, "Ü", "~")
-    toCheck = Replace(toCheck, "¢", "#")
-    toCheck = Replace(toCheck, "£", "-")
-    toCheck = Replace(toCheck, "¥", "&")
-    toCheck = Replace(toCheck, "¤", "@")
-    toCheck = Replace(toCheck, "ƒ", "{")
-    toCheck = Replace(toCheck, "á", "}")
-    toCheck = Replace(toCheck, "í", "^")
-    toCheck = Replace(toCheck, "ó", "`")
-    toCheck = Replace(toCheck, "ú", "_")
-    toCheck = Replace(toCheck, "ñ", "+")
-    toCheck = Replace(toCheck, "÷", "$")
+    toCheck = Replace(toCheck, "Ã¿", "[")
+    toCheck = Replace(toCheck, "Ã¶", "]")
+    toCheck = Replace(toCheck, "Ãœ", "~")
+    toCheck = Replace(toCheck, "Â¢", "#")
+    toCheck = Replace(toCheck, "Â£", "-")
+    toCheck = Replace(toCheck, "Â¥", "&")
+    toCheck = Replace(toCheck, "Â¤", "@")
+    toCheck = Replace(toCheck, "Âƒ", "{")
+    toCheck = Replace(toCheck, "Ã¡", "}")
+    toCheck = Replace(toCheck, "Ã­", "^")
+    toCheck = Replace(toCheck, "Ã³", "`")
+    toCheck = Replace(toCheck, "Ãº", "_")
+    toCheck = Replace(toCheck, "Ã±", "+")
+    toCheck = Replace(toCheck, "Ã·", "$")
     ReversePrepareCheck = LCase$(toCheck)
 End Function
 
@@ -1347,14 +1347,14 @@ Public Sub WriteDatabase(ByVal U As String)
             If (LenB(DB(i).Username) > 0) Then
                 Print #f, DB(i).Username;
                 Print #f, " " & DB(i).Rank;
-                Print #f, " " & IIf(Len(DB(i).Flags) > 0, DB(i).Flags, "%");
-                Print #f, " " & IIf(Len(DB(i).AddedBy) > 0, DB(i).AddedBy, "%");
+                Print #f, " " & IIf(Len(DB(i).Flags) <> 0, DB(i).Flags, "%");
+                Print #f, " " & IIf(Len(DB(i).AddedBy) <> 0, DB(i).AddedBy, "%");
                 Print #f, " " & IIf(DB(i).AddedOn > 0, DateCleanup(DB(i).AddedOn), "%");
-                Print #f, " " & IIf(Len(DB(i).ModifiedBy) > 0, DB(i).ModifiedBy, "%");
+                Print #f, " " & IIf(Len(DB(i).ModifiedBy) <> 0, DB(i).ModifiedBy, "%");
                 Print #f, " " & IIf(DB(i).ModifiedOn > 0, DateCleanup(DB(i).ModifiedOn), "%");
-                Print #f, " " & IIf(Len(DB(i).Type) > 0, DB(i).Type, "USER");
-                Print #f, " " & IIf(Len(DB(i).Groups) > 0, DB(i).Groups, "%");
-                Print #f, " " & IIf(Len(DB(i).BanMessage) > 0, DB(i).BanMessage, "%")
+                Print #f, " " & IIf(Len(DB(i).Type) <> 0, DB(i).Type, "USER");
+                Print #f, " " & IIf(Len(DB(i).Groups) <> 0, DB(i).Groups, "%");
+                Print #f, " " & IIf(Len(DB(i).BanMessage) <> 0, DB(i).BanMessage, "%")
             End If
         Next i
 
@@ -1420,7 +1420,7 @@ Private Function CheckUser(ByVal User As String, Optional ByVal allow_illegal As
                 ' is the character between 0 - 9?
                 If ((Asc(currentCharacter) < Asc("0")) Or (Asc(currentCharacter) > Asc("9"))) Then
                 
-                    ' !@$(){}[]=+`~^-’.:;_|
+                    ' !@$(){}[]=+`~^-Â’.:;_|
                     ' is the character a valid special character?
                     If ((Asc(currentCharacter) = Asc("[")) Or _
                         (Asc(currentCharacter) = Asc("]")) Or _
