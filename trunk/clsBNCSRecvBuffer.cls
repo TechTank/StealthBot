@@ -21,8 +21,8 @@ Option Explicit
 Private strData As String
 
 Public Sub AddData(ByVal Data As String)
-'    If InStr(Data, Chr(&HFF)) <> 1 Then
-'        If LenB(strData) > 0 Then
+'    If InStr(Data, Chr$(&HFF)) <> 1 Then
+'        If LenB(strData) <> 0 Then
 '            strData = strData & Data
 '        Else
 '            If MDebug("showdrops") Then
@@ -38,7 +38,7 @@ Public Sub AddData(ByVal Data As String)
 End Sub
 
 'Public Sub WriteLog(ByVal s As String, Optional ByVal NoDebug As Boolean = False)
-'    If Dir$(App.Path & "\packetlog.txt") = "" Then
+'    If Dir$(App.Path & "\packetlog.txt") = vbNullString Then
 '        Open App.Path & "\packetlog.txt" For Output As #1
 '        Close #1
 '    End If
@@ -61,8 +61,8 @@ Public Function FullPacket() As Boolean
     
     FullPacket = False
     
-    If Len(strData) > 0 Then
-        L = InStr(strData, Chr(&HFF))
+    If Len(strData) <> 0 Then
+        L = InStr(strData, Chr$(&HFF))
         
         If L = 1 Then
             lngPacketLen = StringToWord(Mid$(strData, 3, 2))
@@ -99,7 +99,7 @@ Public Function FullPacket() As Boolean
             If L > 0 Then
                 strData = Mid$(strData, L)
             Else
-                strData = ""
+                strData = vbNullString
             End If
         End If
     End If
@@ -130,7 +130,7 @@ End Sub
 Public Sub VoidTrimBuffer()
     Dim LastPacketStart As Long
     
-    LastPacketStart = InStrRev(strData, Chr(&HFF) & Chr(&HF), , vbBinaryCompare)
+    LastPacketStart = InStrRev(strData, Chr$(&HFF) & Chr$(&HF), , vbBinaryCompare)
     
     If LastPacketStart > 0 Then
         strData = Mid$(strData, LastPacketStart)
